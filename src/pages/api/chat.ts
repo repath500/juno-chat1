@@ -1,9 +1,10 @@
 import { OpenAIStream, StreamingTextResponse } from 'ai'
 import { Configuration, OpenAIApi } from 'openai-edge'
 
-// Create an OpenAI API client (that's edge friendly!)
+// Create a GROQ API client (that's edge friendly!)
 const config = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.GROQ_API_KEY,
+  basePath: 'https://api.groq.com/openai/v1'
 })
 const openai = new OpenAIApi(config)
 
@@ -14,9 +15,9 @@ export default async function POST(req: Request) {
   // Extract the `messages` from the body of the request
   const { messages } = await req.json()
 
-  // Ask OpenAI for a streaming chat completion given the prompt
+  // Ask GROQ for a streaming chat completion given the prompt
   const response = await openai.createChatCompletion({
-    model: 'gpt-4',
+    model: 'mixtral-8x7b-32768',
     stream: true,
     messages
   })
@@ -25,3 +26,4 @@ export default async function POST(req: Request) {
   // Respond with the stream
   return new StreamingTextResponse(stream)
 }
+
